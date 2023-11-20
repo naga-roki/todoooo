@@ -36,6 +36,9 @@ public class LoginController extends HttpServlet {
     	
     	String username = req.getParameter("username");
         String password = req.getParameter("password");
+        //usernameかつpasswrodが空白でない時以下の処理を行う（72）
+        if (!username.trim().isEmpty()) {
+        	//username != null　否定文
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String hashedPassword = HashGenerator.generateHash(password);
             String sql = "SELECT * FROM login WHERE username=? AND password=?";
@@ -67,6 +70,11 @@ public class LoginController extends HttpServlet {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             throw new ServletException("Generate hash Failed", e);
+        }
+        //空白の時に以下の処理を行う
+        //ログイン画面にリダイレクト
+        }else {
+            res.sendRedirect("login");
         }
     }
 }
