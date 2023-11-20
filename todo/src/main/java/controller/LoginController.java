@@ -37,7 +37,7 @@ public class LoginController extends HttpServlet {
     	String username = req.getParameter("username");
         String password = req.getParameter("password");
         //usernameかつpasswrodが空白でない時以下の処理を行う（72）
-        if (!username.trim().isEmpty()) {
+        if (!username.trim().isEmpty()&& !password.trim().isEmpty()) {
         	//username != null　否定文
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String hashedPassword = HashGenerator.generateHash(password);

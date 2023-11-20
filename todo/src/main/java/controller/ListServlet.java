@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/list")
 public class ListServlet extends HttpServlet {
@@ -24,6 +25,9 @@ public class ListServlet extends HttpServlet {
 			request.setAttribute("message", "todoを管理しましょ");
 		}
 		
+		HttpSession session = request.getSession();
+        Integer userID = (Integer) session.getAttribute("id");
+		
 		String url = "jdbc:mysql://localhost/todo";
 		String user = "root";
 		String password = "";
@@ -33,10 +37,11 @@ public class ListServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-		String sql = "SELECT * FROM posts";
+		String sql = "SELECT * FROM posts WHERE userID=?";
 		try (Connection connection = DriverManager.getConnection(url,user,password);
-		PreparedStatement statement =connection.prepareStatement(sql);
-		ResultSet results = statement.executeQuery()){
+		PreparedStatement statement =connection.prepareStatement(sql)){
+				statement.setInt(1, userID);	
+		ResultSet results = statement.executeQuery();
 			ArrayList<HashMap<String, String>> rows = new ArrayList<HashMap<String, String>>();
 			
 			while(results.next()) {
